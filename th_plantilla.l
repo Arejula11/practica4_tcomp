@@ -1,13 +1,21 @@
 %{
-#include<string.h>
 #include "y.tab.h"
+#include <stdio.h>
 %}
-
-
-
 %%
-					//ejemplo de uso de yylval para tokens a los que se
-					//les ha cambiado su valor semantico en th.y
-ALGUNA_EXP_REG		{yylval.nombre=strdup(yytext);return(ALGUN_TOKEN);}
+"{"	{return(OB);}
+"}"	{return(CB);}
+"("	{return(OP);}
+")"	{return(CP);}
+";" {return(PYC);}
+"->" {return(FL);}
+"," {return(C);}
+[0-9]+	{yylval.nombre = strdup(yytext); return(NUMBER);}
+[a-z]+  {return(STRING);}
+\n	{return(EOL);}
+[ \t]	{/* ignorar espacios */}
+.
+
+
 %%
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define PALOS 3
-#define DIM ... //DIMENSION DE LA MATRIZ DE ADYACENCIA
+#define DIM 27 //DIMENSION DE LA MATRIZ DE ADYACENCIA
 #define BUFF 4000
 
 //declarar la variable listaTr de tipo ListaTransiciones
@@ -19,6 +19,7 @@ struct ListaTransiciones {
 
 //tabla de adyacencia
 char* tablaTr[DIM][DIM];
+char* fila;
 
 //inicializa una tabla cuadrada DIM x DIM con la cadena vacia
 void iniTabla(char* tabla[DIM][DIM]) {
@@ -71,14 +72,27 @@ void copiar(char* orig[DIM][DIM], char* copia[DIM][DIM]) {
 	char* nombre;
 }
 
-%token ID ... //PONER TODOS LOS TOKENS DE LA GRAMATICA, POR EJEMPLO, ID
-%start	...		//variable inicial 
+%token OB CB OP CP PYC FL C EOL STRING NUMBER //PONER TODOS LOS TOKENS DE LA GRAMATICA, POR EJEMPLO, ID
+%start	grafo		//variable inicial 
 
-%type<nombre> ID ... //lista de tokens y variables que su valor semantico,
-                     //recogido mediante yylval, es 'nombre' (ver union anterior).
-					 //Para estos tokens, yylval será de tipo char* en lugar de int.
+%type<nombre> NUMBER 
 
 %%
+
+grafo:	
+		|grafo linea  
+		|STRING STRING EOL OB EOL grafo CB {printf("terminado\n");}
+		;	
+
+linea:	NUMBER FL transiciones EOL{fila=$1;}
+		;
+
+transiciones:	NUMBER OP NUMBER CP C transiciones{int i; i=atoi(fila);int j; j=atoi($1);tablaTr[i][j]=$3;}
+		| NUMBER OP NUMBER CP PYC {int i; i=atoi(fila);int j; j=atoi($1);tablaTr[i][j]=$3;}
+		;
+
+
+
 
 
 %%
@@ -96,10 +110,10 @@ int main() {
 	iniTabla(tablaTr);
 
 	//nodo inicial
-	char* estadoIni = ...;
+	char* estadoIni = "000";
 
 	//nodo final
-	char* estadoFin = ...;
+	char* estadoFin = "222";
 	
 	int error = yyparse();
 
@@ -107,18 +121,29 @@ int main() {
 	if (error == 0) {
 		//matriz para guardar la potencia
 		char* pot[DIM][DIM];
-		copiar(tablaTr,pot)
+		char* aux[DIM][DIM];
+		copiar(tablaTr,pot);
+		copiar(tablaTr, aux);
 		//calcular movimientos de estadoIni a estadoFin
 		//calculando las potencias sucesivas de tablaTr
-		...
-		...
+		int i;
+		i=atoi(estadoIni);
+		int j;
+		j=atoi(estadoFin);
+		while(pot[i][j]==""){
+			multiplicar(tablaTr, aux, pot);
+			copiar(pot, aux);
+		}
+		
+		
 
 
 		printf("Nodo inicial  : %s\n", estadoIni);
 		//rellenar los ... con los indices adecuados a vuestro codigo
-		printf("Movimientos   : %s\n", pot[...][...]);
+		printf("Movimientos   : %s\n", pot[i][j]);
 		printf("Nodo final    : %s\n", estadoFin);
 	}
 
 	return error;
 }
+
