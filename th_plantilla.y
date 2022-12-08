@@ -81,19 +81,25 @@ void copiar(char* orig[DIM][DIM], char* copia[DIM][DIM]) {
 
 grafo:	
 		|grafo linea  
-		|STRING STRING EOL OB EOL grafo CB {printf("terminado\n");}
+		|STRING STRING EOL OB EOL grafo CB 
 		;	
 
-linea:	NUMBER FL transiciones EOL{fila=$1; printf("%s;\n", fila );
+linea:	orig FL lista PYC EOL{
 }
 		;
 
-transiciones:	NUMBER OP NUMBER CP C transiciones{printf("hola1");//int i; i=atoi(fila); int j; j=atoi($1); printf("%d, %d \n", funcion(i), funcion(j));tablaTr[funcion(i)][funcion(j)]=$3;
-}
-		| NUMBER OP NUMBER CP PYC {printf("hola\n");// int i; i=atoi(fila);int j; j=atoi($1);tablaTr[i][j]=$3;
-		}
+lista: transiciones 
+		|  lista C transiciones
 		;
 
+transiciones:	NUMBER OP NUMBER CP { int i; i=atoi(fila); int j; j=atoi($1);tablaTr[funcion(i)][funcion(j)]=$3;
+}
+		
+		;
+
+
+orig: NUMBER {fila=$1;
+}
 
 
 
@@ -104,18 +110,25 @@ int yyerror(char* s) {
 	printf("%s\n");
 	return -1;
 }
+void mostrarMatriz(char* tablaTr[DIM][DIM]){
+	for(int i=0; i<DIM; i++){
+		for(int j=0; j<DIM; j++){
+			printf("%s,", tablaTr[i][j]);
+			
+		}
+		printf("\n");
+	}
+	printf("-------------------------------------------------\n");
+}
 
 int funcion(int num){
 	int b=3;
-	int vector[100];
-	int i=0;
 	int res=0;
 	int aux=1;
 	while(num>0){
 		res+=num%10*aux;
 		num/=10;
 		aux*=b;
-		i++;
 	}
 	return res;
 }
@@ -145,12 +158,17 @@ int main() {
 		//calcular movimientos de estadoIni a estadoFin
 		//calculando las potencias sucesivas de tablaTr
 		int i;
-		i=atoi(estadoIni);
+		i=funcion(atoi(estadoIni));
 		int j;
-		j=atoi(estadoFin);
-		while(pot[i][j]==""){
+		j=funcion(atoi(estadoFin));
+		//mostrarMatriz(tablaTr);
+		//mostrarMatriz(pot);
+		while(strcmp(pot[i][j],"") == 0){
+			//printf("empieza\n");
 			multiplicar(tablaTr, aux, pot);
 			copiar(pot, aux);
+			//mostrarMatriz(pot);
+			
 		}
 		
 		
