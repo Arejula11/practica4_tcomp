@@ -72,10 +72,10 @@ void copiar(char* orig[DIM][DIM], char* copia[DIM][DIM]) {
 	char* nombre;
 }
 
-%token OB CB OP CP PYC FL C EOL STRING NUMBER //PONER TODOS LOS TOKENS DE LA GRAMATICA, POR EJEMPLO, ID
+%token OB CB OP CP PYC FL C EOL STRING //PONER TODOS LOS TOKENS DE LA GRAMATICA, POR EJEMPLO, ID
 %start	grafo		//variable inicial 
 
-%type<nombre> NUMBER 
+%token<nombre> NUMBER
 
 %%
 
@@ -84,11 +84,14 @@ grafo:
 		|STRING STRING EOL OB EOL grafo CB {printf("terminado\n");}
 		;	
 
-linea:	NUMBER FL transiciones EOL{fila=$1;}
+linea:	NUMBER FL transiciones EOL{fila=$1; printf("%s;\n", fila );
+}
 		;
 
-transiciones:	NUMBER OP NUMBER CP C transiciones{int i; i=atoi(fila);int j; j=atoi($1);tablaTr[i][j]=$3;}
-		| NUMBER OP NUMBER CP PYC {int i; i=atoi(fila);int j; j=atoi($1);tablaTr[i][j]=$3;}
+transiciones:	NUMBER OP NUMBER CP C transiciones{printf("hola1");//int i; i=atoi(fila); int j; j=atoi($1); printf("%d, %d \n", funcion(i), funcion(j));tablaTr[funcion(i)][funcion(j)]=$3;
+}
+		| NUMBER OP NUMBER CP PYC {printf("hola\n");// int i; i=atoi(fila);int j; j=atoi($1);tablaTr[i][j]=$3;
+		}
 		;
 
 
@@ -100,6 +103,21 @@ transiciones:	NUMBER OP NUMBER CP C transiciones{int i; i=atoi(fila);int j; j=at
 int yyerror(char* s) {
 	printf("%s\n");
 	return -1;
+}
+
+int funcion(int num){
+	int b=3;
+	int vector[100];
+	int i=0;
+	int res=0;
+	int aux=1;
+	while(num>0){
+		res+=num%10*aux;
+		num/=10;
+		aux*=b;
+		i++;
+	}
+	return res;
 }
 
 int main() {
