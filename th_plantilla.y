@@ -84,8 +84,7 @@ grafo:
 		|STRING STRING EOL OB EOL grafo CB 
 		;	
 
-linea:	orig FL lista PYC EOL{
-}
+linea:	orig FL lista PYC EOL
 		;
 
 lista: transiciones 
