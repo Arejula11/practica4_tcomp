@@ -10,7 +10,7 @@
 ";" {return(PYC);}
 "->" {return(FL);}
 "," {return(C);}
-[0-9]+	{yylval.nombre = yytext; return(NUMBER);}
+[0-9]+	{yylval.nombre = strdup(yytext); return(NUMBER);}
 [a-z]+  {return(STRING);}
 \n	{return(EOL);}
 [ \t]	{/* ignorar espacios */}
