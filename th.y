@@ -63,6 +63,8 @@ void copiar(char* orig[DIM][DIM], char* copia[DIM][DIM]) {
 		}
 	}
 }
+// Devuelve el numero num en base 10
+int funcion(int num);
 
 
 %}
@@ -91,7 +93,7 @@ lista: transiciones
 		|  lista C transiciones
 		;
 
-transiciones:	NUMBER OP NUMBER CP { int i; i=atoi(fila); int j; j=atoi($1);tablaTr[funcion(i)][funcion(j)]=$3;
+transiciones:	NUMBER OP NUMBER CP { int i; i=atoi(fila); int j; j=atoi($1);tablaTr[funcion(i)][funcion(j)] = $3;
 }
 		
 		;
@@ -152,26 +154,19 @@ int main() {
 		//matriz para guardar la potencia
 		char* pot[DIM][DIM];
 		char* aux[DIM][DIM];
-		copiar(tablaTr,pot);
+		copiar(tablaTr, pot);
 		copiar(tablaTr, aux);
 		//calcular movimientos de estadoIni a estadoFin
-		//calculando las potencias sucesivas de tablaTr
 		int i;
 		i=funcion(atoi(estadoIni));
 		int j;
 		j=funcion(atoi(estadoFin));
-		//mostrarMatriz(tablaTr);
-		//mostrarMatriz(pot);
+		//calculando las potencias sucesivas de tablaTr
 		while(strcmp(pot[i][j],"") == 0){
-			//printf("empieza\n");
 			multiplicar(tablaTr, aux, pot);
 			copiar(pot, aux);
-			//mostrarMatriz(pot);
-			
 		}
 		
-		
-
 
 		printf("Nodo inicial  : %s\n", estadoIni);
 		//rellenar los ... con los indices adecuados a vuestro codigo
